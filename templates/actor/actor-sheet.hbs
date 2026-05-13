@@ -1,0 +1,150 @@
+<form class="{{cssClass}} k8-actor-sheet" autocomplete="off">
+  <header class="k8-sheet-header">
+    <input class="k8-actor-name" name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+    <div class="k8-gender-select">
+  <label>Gender</label>
+  <select name="system.identity.gender">
+    {{selectOptions genderOptions selected=system.identity.gender}}
+  </select>
+    </div>
+  </header>
+
+  <section class="k8-main-attributes">
+    <div class="k8-attr-card">
+      <label>Str</label>
+      <input name="system.attributes.str.value" type="number" value="{{system.attributes.str.value}}" />
+    </div>
+
+    <div class="k8-attr-card">
+      <label>For</label>
+      <input name="system.attributes.for.value" type="number" value="{{system.attributes.for.value}}" />
+    </div>
+
+    <div class="k8-attr-card">
+      <label>Ref</label>
+      <input name="system.attributes.ref.value" type="number" value="{{system.attributes.ref.value}}" />
+    </div>
+
+    <div class="k8-attr-card">
+      <label>Fit</label>
+      <input name="system.attributes.fit.value" type="number" value="{{system.attributes.fit.value}}" />
+    </div>
+
+    <div class="k8-attr-card">
+      <label>Sp</label>
+      <input name="system.attributes.sp.value" type="number" value="{{system.attributes.sp.value}}" />
+    </div>
+  </section>
+
+  <section class="k8-sheet-body">
+    <aside class="k8-derived-panel">
+      <h2>Stats</h2>
+
+      <div class="k8-stat-row">
+        <label>Move</label>
+        <input name="system.derived.move.value" type="number" value="{{system.derived.move.value}}" />
+      </div>
+
+      <div class="k8-stat-row">
+        <label>FRP</label>
+        <input name="system.derived.frp.value" type="number" value="{{system.derived.frp.value}}" />
+      </div>
+
+      <div class="k8-stat-row">
+        <label>Perception</label>
+        <input name="system.derived.perception.value" type="number" value="{{system.derived.perception.value}}" />
+      </div>
+
+      <div class="k8-stat-row">
+        <label>Bacc</label>
+        <input name="system.derived.bacc.value" type="number" value="{{system.derived.bacc.value}}" />
+      </div>
+
+      <div class="k8-stat-row">
+        <label>Macc</label>
+        <input name="system.derived.macc.value" type="number" value="{{system.derived.macc.value}}" />
+      </div>
+
+      <div class="k8-stat-row">
+        <label>FocusRes</label>
+        <input name="system.derived.focusres.value" type="number" value="{{system.derived.focusres.value}}" />
+      </div>
+
+      <div class="k8-stat-row">
+        <label>StaminaRes</label>
+        <input name="system.derived.staminares.value" type="number" value="{{system.derived.staminares.value}}" />
+      </div>
+    </aside>
+
+    <section class="k8-body-panel">
+      <div class="k8-resources">
+        <div class="k8-resource">
+          <label>Focus</label>
+          <div>
+            <input name="system.resources.focus.value" type="number" value="{{system.resources.focus.value}}" />
+            <span>/</span>
+            <input name="system.resources.focus.max" type="number" value="{{system.resources.focus.max}}" />
+          </div>
+        </div>
+
+        <div class="k8-resource">
+          <label>Stamina</label>
+          <div>
+            <input name="system.resources.stamina.value" type="number" value="{{system.resources.stamina.value}}" />
+            <span>/</span>
+            <input name="system.resources.stamina.max" type="number" value="{{system.resources.stamina.max}}" />
+          </div>
+        </div>
+
+        <div class="k8-resource">
+          <label>Blood</label>
+          <div>
+            <input name="system.resources.blood.value" type="number" value="{{system.resources.blood.value}}" />
+            <span>/</span>
+            <input name="system.resources.blood.max" type="number" value="{{system.resources.blood.max}}" />
+          </div>
+        </div>
+      </div>
+
+      <div class="k8-body-map">
+        <div class="k8-defense-block k8-defense-head">
+          <h3>Head</h3>
+          <label>HP <input name="system.defense.limbhp.value" type="number" value="{{system.defense.limbhp.value}}" /></label>
+          <label>Repulse <input name="system.defense.head.repulse" type="number" value="{{system.defense.head.repulse}}" /></label>
+          <label>Resilience <input name="system.defense.head.resilience" type="number" value="{{system.defense.head.resilience}}" /></label>
+          <label>Armor <input name="system.defense.head.armor" type="number" value="{{system.defense.head.armor}}" /></label>
+        </div>
+
+        <div class="k8-defense-block k8-defense-arms">
+          <h3>Arms</h3>
+          <label>HP <input name="system.defense.limbhp.value" type="number" value="{{system.defense.limbhp.value}}" /></label>
+          <label>Repulse <input name="system.defense.arms.repulse" type="number" value="{{system.defense.arms.repulse}}" /></label>
+          <label>Resilience <input name="system.defense.arms.resilience" type="number" value="{{system.defense.arms.resilience}}" /></label>
+          <label>Armor <input name="system.defense.arms.armor" type="number" value="{{system.defense.arms.armor}}" /></label>
+        </div>
+
+        <img
+            class="k8-character-silhouette"
+            src="systems/k8system/images/sheets/{{system.identity.gender}}.png"
+            alt="Character silhouette"
+        />
+
+        <div class="k8-defense-block k8-defense-torso">
+          <h3>Torso</h3>
+          <label>HP <input name="system.defense.torsohp.value" type="number" value="{{system.defense.torsohp.value}}" /></label>
+          <label>Repulse <input name="system.defense.torso.repulse" type="number" value="{{system.defense.torso.repulse}}" /></label>
+          <label>Resilience <input name="system.defense.torso.resilience" type="number" value="{{system.defense.torso.resilience}}" /></label>
+          <label>Armor <input name="system.defense.torso.armor" type="number" value="{{system.defense.torso.armor}}" /></label>
+        </div>
+
+        <div class="k8-defense-block k8-defense-legs">
+          <h3>Legs</h3>
+          <label>HP <input name="system.defense.limbhp.value" type="number" value="{{system.defense.limbhp.value}}" /></label>
+          <label>Repulse <input name="system.defense.legs.repulse" type="number" value="{{system.defense.legs.repulse}}" /></label>
+          <label>Resilience <input name="system.defense.legs.resilience" type="number" value="{{system.defense.legs.resilience}}" /></label>
+          <label>Armor <input name="system.defense.legs.armor" type="number" value="{{system.defense.legs.armor}}" /></label>
+        </div>
+      </div>
+    </section>
+  </section>
+</form>

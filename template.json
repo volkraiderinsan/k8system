@@ -1,0 +1,175 @@
+{
+  "Actor": {
+    "types": ["player", "npc"],
+
+    "templates": {
+      "base": {
+        "identity": {
+          "gender": "male"
+        },
+        "attributes": {
+          "str": {
+            "value": 50
+          },
+          "for": {
+            "value": 50
+          },
+          "ref": {
+            "value": 50
+          },
+          "fit": {
+            "value": 50
+          },
+          "sp": {
+            "value": 50
+          }
+        },
+
+        "conditions": {
+          "fatigue": {
+            "value": 0
+          },
+          "stress": {
+            "value": 0
+          }
+        },
+
+        "resources": {
+          "focus": {
+            "value": 100,
+            "max": 100
+          },
+          "stamina": {
+            "value": 20,
+            "max": 20
+          },
+          "blood": {
+            "value": 20,
+            "max": 20
+          }
+        },
+
+        "derived": {
+          "move": {
+            "value": 15
+          },
+          "frp": {
+            "value": 10
+          },
+          "perception": {
+            "value": 0
+          },
+          "bacc": {
+            "value": 0
+          },
+          "macc": {
+            "value": 0
+          },
+          "focusres": {
+            "value": 0
+          },
+          "staminares": {
+            "value": 0
+          }
+        },
+
+        "defense": {
+          "torsohp": {
+            "value": 10
+          },
+          "limbhp": {
+             "value": 10
+          },
+          "head": {
+            "repulse": 0,
+            "resilience": 0,
+            "armor": 0
+          },
+          "arms": {
+            "repulse": 0,
+            "resilience": 0,
+            "armor": 0
+          },
+          "torso": {
+            "repulse": 0,
+            "resilience": 0,
+            "armor": 0
+          },
+          "legs": {
+            "repulse": 0,
+            "resilience": 0,
+            "armor": 0
+          }
+        }
+      }
+    },
+
+    "player": {
+      "templates": ["base"]
+    },
+
+    "npc": {
+      "templates": ["base"]
+    }
+  },
+
+  "Item": {
+    "types": ["weapon", "gear", "consumable", "misc", "talent", "effect"],
+
+    "templates": {
+      "base": {
+        "description": "",
+        "quantity": 1,
+        "weight": 0
+      }
+    },
+
+    "weapon": {
+      "templates": ["base"],
+      "damage": {
+        "diceNumber": 1,
+        "diceSize": 10,
+        "bonus": 0,
+        "exploding": false,
+        "explodeThreshold": null
+      },
+      "accuracy": {
+        "bonus": 0,
+        "type": "ballistic"
+      },
+      "focusCost": 1
+    },
+
+    "gear": {
+      "templates": ["base"],
+      "equipped": false
+    },
+
+    "consumable": {
+      "templates": ["base"],
+      "uses": {
+        "value": 1,
+        "max": 1
+      }
+    },
+
+    "misc": {
+      "templates": ["base"]
+    },
+
+    "talent": {
+      "templates": ["base"],
+      "active": false,
+      "focusCost": 0
+    },
+
+    "effect": {
+      "templates": ["base"],
+      "active": true,
+      "duration": {
+        "value": 0,
+        "unit": "round"
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+    "id": "k8system",
+    "title": "K8 System",
+    "description": "Custom system for Foundry VTT v13",
+    "version": "0.0.1",
+  
+    "compatibility": {
+      "minimum": "13",
+      "verified": "13"
+    },
+  
+    "authors": [
+      {
+        "name": "Volkraider"
+      }
+    ],
+  
+    "esmodules": [
+      "module/k8system.mjs"
+    ],
+  
+    "styles": [
+      "styles/system.css"
+    ],
+  
+    "languages": [
+      {
+        "lang": "en",
+        "name": "English",
+        "path": "lang/en.json"
+      }
+    ],
+  
+    "packs": [],
+  
+    "primaryTokenAttribute": "health",
+  
+    "manifest": "",
+    "download": "",
+  
+    "license": "LICENSE.txt"
+  }

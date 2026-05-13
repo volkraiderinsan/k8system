@@ -1,0 +1,161 @@
+.k8-actor-sheet {
+    padding: 12px;
+  }
+  
+  .k8-sheet-header {
+    margin-bottom: 12px;
+  }
+  
+  .k8-actor-name {
+    width: 100%;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .k8-main-attributes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .k8-attr-card {
+    border: 1px solid #777;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .k8-attr-card label {
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .k8-attr-card input {
+    width: 100%;
+    font-size: 28px;
+    text-align: center;
+  }
+  
+  .k8-sheet-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+  }
+  
+  .k8-derived-panel {
+    border: 1px solid #777;
+    padding: 10px;
+  }
+  
+  .k8-derived-panel h2 {
+    margin-top: 0;
+  }
+  
+  .k8-stat-row {
+    display: grid;
+    grid-template-columns: 1fr 70px;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  
+  .k8-stat-row input {
+    text-align: center;
+  }
+  
+  .k8-body-panel {
+    border: 1px solid #777;
+    padding: 10px;
+  }
+  
+  .k8-resources {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .k8-resource {
+    border: 1px solid #777;
+    padding: 6px;
+    text-align: center;
+  }
+  
+  .k8-resource label {
+    display: block;
+    font-weight: bold;
+  }
+  
+  .k8-resource input {
+    width: 48px;
+    text-align: center;
+  }
+  
+  .k8-body-map {
+    position: relative;
+    min-height: 470px;
+  }
+  
+  .k8-character-silhouette {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    position: absolute;
+    left: 50%;
+    top: 40px;
+    width: 180px;
+    height: 390px;
+    transform: translateX(-50%);
+    object-fit: contain;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+  
+  .k8-defense-block {
+    position: absolute;
+    width: 145px;
+    border: 1px solid #777;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .k8-defense-block h3 {
+    margin: 0 0 4px 0;
+    text-align: center;
+  }
+  
+  .k8-defense-block label {
+    display: grid;
+    grid-template-columns: 1fr 50px;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+  
+  .k8-defense-block input {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .k8-defense-head {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+  }
+  
+  .k8-defense-arms {
+    left: 20px;
+    top: 150px;
+  }
+  
+  .k8-defense-torso {
+    right: 20px;
+    top: 150px;
+  }
+  
+  .k8-defense-legs {
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+  }
