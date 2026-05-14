@@ -5,7 +5,8 @@
     "templates": {
       "base": {
         "identity": {
-          "gender": "male"
+          "gender": "male",
+          "art": ""
         },
         "attributes": {
           "str": {

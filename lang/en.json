@@ -1,0 +1,27 @@
+{
+    "K8SYSTEM": {
+      "ActorSheet": "K8 Actor Sheet",
+      "Gender": "Gender",
+      "Male": "Male",
+      "Female": "Female",
+      "Stats": "Stats",
+      "Focus": "Focus",
+      "Stamina": "Stamina",
+      "Blood": "Blood",
+      "Head": "Head",
+      "Arms": "Arms",
+      "Torso": "Torso",
+      "Legs": "Legs",
+      "Move": "Move",
+      "FRP": "FRP",
+      "Perception": "Perception",
+      "Bacc": "Bacc",
+      "Macc": "Macc",
+      "FocusRes": "FocusRes",
+      "StaminaRes": "StaminaRes",
+      "HP": "HP",
+      "Repulse": "Repulse",
+      "Resilience": "Resilience",
+      "Armor": "Armor"
+    }
+  }
