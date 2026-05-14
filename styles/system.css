@@ -186,21 +186,64 @@
 }
 
 .k8-attr-card {
-  padding: 8px;
-  text-align: center;
-}
-
-.k8-attr-card label {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.k8-attr-card input {
-  width: 100%;
-  text-align: center;
-}
+    position: relative;
+    overflow: hidden;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .k8-attr-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  
+    background-size: 104px 104px;
+    background-position: center 45%;
+    background-repeat: no-repeat;
+  
+    opacity: 0.24;
+    filter: brightness(1.15) contrast(1.1);
+    pointer-events: none;
+  }
+  
+  .k8-attr-card label,
+  .k8-attr-card input {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .k8-attr-card label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  
+  .k8-attr-card input {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .k8-attr-str::before {
+    background-image: url("/systems/k8system/images/attributes/str.png");
+  }
+  
+  .k8-attr-for::before {
+    background-image: url("/systems/k8system/images/attributes/for.png");
+  }
+  
+  .k8-attr-ref::before {
+    background-image: url("/systems/k8system/images/attributes/ref.png");
+  }
+  
+  .k8-attr-fit::before {
+    background-image: url("/systems/k8system/images/attributes/fit.png");
+  }
+  
+  .k8-attr-sp::before {
+    background-image: url("/systems/k8system/images/attributes/sp.png");
+  }
 
 .k8-sheet-body {
   display: grid;

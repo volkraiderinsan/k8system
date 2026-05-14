@@ -1,3 +1,5 @@
+import { calculateActorDerived } from "../system/actor-derived.mjs";
+
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -8,20 +10,30 @@ function isRealImage(path) {
 }
 
 export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
-  static DEFAULT_OPTIONS = {
-    classes: ["k8system", "sheet", "actor", "k8-actor-sheet-app"],
-    position: {
-      width: 900,
-      height: 760
-    },
-    window: {
-      resizable: true
-    },
-    form: {
-      submitOnChange: true,
-      closeOnSubmit: false
-    }
-  };
+    static DEFAULT_OPTIONS = {
+        tag: "form",
+      
+        classes: ["k8system", "sheet", "actor", "k8-actor-sheet-app"],
+      
+        position: {
+          width: 900,
+          height: 760
+        },
+      
+        window: {
+          resizable: true
+        },
+      
+        form: {
+          handler: async function (event, form, formData) {
+            event.preventDefault();
+            await this.document.update(formData.object);
+            await this.render(true);
+          },
+          submitOnChange: true,
+          closeOnSubmit: false
+        }
+      };
 
   static PARTS = {
     form: {
@@ -31,10 +43,15 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
+    const calculated = calculateActorDerived(this.actor);
 
     context.actor = this.actor;
     context.system = this.actor.system;
     context.items = this.actor.items;
+
+    context.derived = calculated.derived;
+    context.calculatedResources = calculated.resources;
+    context.calculatedDefense = calculated.defense;
 
     context.genderOptions = {
       male: "Male",

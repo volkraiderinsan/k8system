@@ -1,7 +1,6 @@
 {
   "Actor": {
     "types": ["player", "npc"],
-
     "templates": {
       "base": {
         "identity": {
@@ -9,94 +8,54 @@
           "art": ""
         },
         "attributes": {
-          "str": {
-            "value": 50
-          },
-          "for": {
-            "value": 50
-          },
-          "ref": {
-            "value": 50
-          },
-          "fit": {
-            "value": 50
-          },
-          "sp": {
-            "value": 50
-          }
+          "str": { "value": 50 },
+          "for": { "value": 50 },
+          "ref": { "value": 50 },
+          "fit": { "value": 50 },
+          "sp": { "value": 50 }
         },
-
         "conditions": {
-          "fatigue": {
-            "value": 0
-          },
-          "stress": {
-            "value": 0
-          }
+          "fatigue": { "value": 0 },
+          "stress": { "value": 0 }
         },
-
         "resources": {
-          "focus": {
-            "value": 100,
-            "max": 100
-          },
-          "stamina": {
-            "value": 20,
-            "max": 20
-          },
-          "blood": {
-            "value": 20,
-            "max": 20
-          }
+          "focus": { "value": 100, "max": 100 },
+          "stamina": { "value": 20, "max": 20 },
+          "blood": { "value": 20, "max": 20 }
         },
-
         "derived": {
-          "move": {
-            "value": 15
-          },
-          "frp": {
-            "value": 10
-          },
-          "perception": {
-            "value": 0
-          },
-          "bacc": {
-            "value": 0
-          },
-          "macc": {
-            "value": 0
-          },
-          "focusres": {
-            "value": 0
-          },
-          "staminares": {
-            "value": 0
-          }
+          "move": { "value": 0 },
+          "fpr": { "value": 0 },
+          "perception": { "value": 0 },
+          "bacc": { "value": 0 },
+          "macc": { "value": 0 },
+          "beff": { "value": 0 },
+          "strmod": { "value": 0 },
+          "fitmod": { "value": 0 },
+          "focusres": { "value": 0 },
+          "staminares": { "value": 0 }
         },
-
         "defense": {
-          "torsohp": {
-            "value": 10
-          },
-          "limbhp": {
-             "value": 10
-          },
           "head": {
+            "hp": { "value": 0 },
             "repulse": 0,
             "resilience": 0,
             "armor": 0
           },
           "arms": {
+            "hp": { "value": 0 },
             "repulse": 0,
             "resilience": 0,
             "armor": 0
           },
           "torso": {
+            "hp": { "value": 0 },
             "repulse": 0,
             "resilience": 0,
             "armor": 0
           },
           "legs": {
+            "hp": { "value": 0 },
             "repulse": 0,
             "resilience": 0,
             "armor": 0
@@ -104,19 +63,15 @@
         }
       }
     },
-
     "player": {
       "templates": ["base"]
     },
-
     "npc": {
       "templates": ["base"]
     }
   },
-
   "Item": {
     "types": ["weapon", "gear", "consumable", "misc", "talent", "effect"],
-
     "templates": {
       "base": {
         "description": "",
@@ -124,7 +79,6 @@
         "weight": 0
       }
     },
-
     "weapon": {
       "templates": ["base"],
       "damage": {
@@ -140,12 +94,10 @@
       },
       "focusCost": 1
     },
-
     "gear": {
       "templates": ["base"],
       "equipped": false
     },
-
     "consumable": {
       "templates": ["base"],
       "uses": {
@@ -153,17 +105,14 @@
         "max": 1
       }
     },
-
     "misc": {
       "templates": ["base"]
     },
-
     "talent": {
       "templates": ["base"],
       "active": false,
       "focusCost": 0
     },
-
     "effect": {
       "templates": ["base"],
       "active": true,
