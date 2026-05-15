@@ -303,10 +303,33 @@ function fromTable(value, table) {
         repulse
       }
     };
-  
+    
+    const conditions = {
+      poise: {
+        value: Number(actor.system.conditions.poise?.value) || 0
+      },
+    
+      fatigue: makeStat([
+        {
+          label: "fatigue mod",
+          value: Number(actor.system.conditions.fatigue?.mod) || 0
+        },
+        ...collectBonuses(actor, "conditions.fatigue")
+      ]),
+    
+      stress: makeStat([
+        {
+          label: "stress mod",
+          value: Number(actor.system.conditions.stress?.mod) || 0
+        },
+        ...collectBonuses(actor, "conditions.stress")
+      ])
+    };
+
     return {
       derived,
       resources,
-      defense
+      defense,
+      conditions
     };
   }

@@ -35,11 +35,15 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         }
       };
 
-  static PARTS = {
-    form: {
-      template: "systems/k8system/templates/actor/actor-sheet.hbs"
-    }
-  };
+      static PARTS = {
+        form: {
+          template: "systems/k8system/templates/actor/actor-sheet.hbs"
+        }
+      };
+      
+      get title() {
+        return this.actor.name || "Unnamed Actor";
+      }
 
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
@@ -52,6 +56,7 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.derived = calculated.derived;
     context.calculatedResources = calculated.resources;
     context.calculatedDefense = calculated.defense;
+    context.calculatedConditions = calculated.conditions;
 
     context.genderOptions = {
       male: "Male",
@@ -77,6 +82,12 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     context.backgroundArt = context.hasFullArtImage ? characterArt : "";
 
+    context.activeTab = this.actor.getFlag("k8system", "activeTab") ?? "main";
+
+    context.isMainTab = context.activeTab === "main";
+    context.isInventoryTab = context.activeTab === "inventory";
+    context.isModifiersTab = context.activeTab === "modifiers";
+    
     return context;
   }
 
@@ -131,5 +142,18 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         await this.render(true);
       });
     }
+    const tabButtons = this.element.querySelectorAll(".k8-tab-button");
+
+      for (const button of tabButtons) {
+        button.addEventListener("click", async event => {
+          event.preventDefault();
+
+          const tab = button.dataset.tab;
+          if (!tab) return;
+
+          await this.actor.setFlag("k8system", "activeTab", tab);
+          await this.render(true);
+        });
+      }
   }
 }

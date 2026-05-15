@@ -15,8 +15,15 @@
           "sp": { "value": 50 }
         },
         "conditions": {
-          "fatigue": { "value": 0 },
-          "stress": { "value": 0 }
+          "poise": {
+            "value": 0
+          },
+          "fatigue": {
+            "mod": 0
+          },
+          "stress": {
+            "mod": 0
+          }
         },
         "resources": {
           "focus": { "value": 100, "max": 100 },

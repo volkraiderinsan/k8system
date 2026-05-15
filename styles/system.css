@@ -186,64 +186,62 @@
 }
 
 .k8-attr-card {
-    position: relative;
-    overflow: hidden;
-    padding: 8px;
-    text-align: center;
-  }
-  
-  .k8-attr-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  
-    background-size: 104px 104px;
-    background-position: center 45%;
-    background-repeat: no-repeat;
-  
-    opacity: 0.24;
-    filter: brightness(1.15) contrast(1.1);
-    pointer-events: none;
-  }
-  
-  .k8-attr-card label,
-  .k8-attr-card input {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .k8-attr-card label {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  
-  .k8-attr-card input {
-    width: 100%;
-    text-align: center;
-  }
-  
-  .k8-attr-str::before {
-    background-image: url("/systems/k8system/images/attributes/str.png");
-  }
-  
-  .k8-attr-for::before {
-    background-image: url("/systems/k8system/images/attributes/for.png");
-  }
-  
-  .k8-attr-ref::before {
-    background-image: url("/systems/k8system/images/attributes/ref.png");
-  }
-  
-  .k8-attr-fit::before {
-    background-image: url("/systems/k8system/images/attributes/fit.png");
-  }
-  
-  .k8-attr-sp::before {
-    background-image: url("/systems/k8system/images/attributes/sp.png");
-  }
+  position: relative;
+  overflow: hidden;
+  padding: 8px;
+  text-align: center;
+}
+
+.k8-attr-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: 104px 104px;
+  background-position: center 45%;
+  background-repeat: no-repeat;
+  opacity: 0.24;
+  filter: brightness(1.15) contrast(1.1);
+  pointer-events: none;
+}
+
+.k8-attr-card label,
+.k8-attr-card input {
+  position: relative;
+  z-index: 1;
+}
+
+.k8-attr-card label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.k8-attr-card input {
+  width: 100%;
+  text-align: center;
+}
+
+.k8-attr-str::before {
+  background-image: url("/systems/k8system/images/attributes/str.png");
+}
+
+.k8-attr-for::before {
+  background-image: url("/systems/k8system/images/attributes/for.png");
+}
+
+.k8-attr-ref::before {
+  background-image: url("/systems/k8system/images/attributes/ref.png");
+}
+
+.k8-attr-fit::before {
+  background-image: url("/systems/k8system/images/attributes/fit.png");
+}
+
+.k8-attr-sp::before {
+  background-image: url("/systems/k8system/images/attributes/sp.png");
+}
 
 .k8-sheet-body {
   display: grid;
@@ -382,7 +380,151 @@
   text-align: center;
 }
 
+.k8-attr-card input,
+.k8-condition-poise > input,
+.k8-condition-total,
+.k8-condition-manual {
+  width: 64px;
+  max-width: 64px;
+  min-width: 64px;
+  text-align: center;
+  justify-self: center;
+}
+
+.k8system input[readonly] {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  pointer-events: auto;
+}
+
+.k8system input[readonly]:focus {
+  box-shadow: none;
+}
+
 .k8system input:focus,
 .k8system select:focus {
   box-shadow: 0 0 5px rgba(230, 210, 160, 0.75);
+}
+
+.k8-sheet-tabs {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.k8-tab-button {
+  padding: 8px 16px;
+  color: #efe6d0;
+  font-weight: 700;
+  background: rgba(20, 20, 30, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.k8-tab-button:hover {
+  background: rgba(45, 35, 55, 0.78);
+}
+
+.k8-tab-button.active {
+  color: rgb(0, 232, 220);
+  background: rgba(50, 38, 52, 0.9);
+  border-color: rgba(0, 232, 220, 0.55);
+}
+
+.k8-tab-placeholder {
+  position: relative;
+  z-index: 2;
+  min-height: 420px;
+  padding: 24px;
+  background: rgba(20, 20, 30, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.k8-tab-placeholder h2 {
+  margin-top: 0;
+}
+
+.k8-modifiers-tab {
+  position: relative;
+  z-index: 2;
+}
+
+.k8-conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  justify-content: center;
+  gap: 8px;
+}
+
+.k8-condition-card {
+  position: relative;
+  overflow: hidden;
+  width: 150px;
+  height: 74px;
+  padding: 8px;
+  text-align: center;
+  background: rgba(20, 20, 30, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.k8-condition-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: 104px 104px;
+  background-position: center 45%;
+  background-repeat: no-repeat;
+  opacity: 0.24;
+  filter: brightness(1.15) contrast(1.1);
+  pointer-events: none;
+}
+
+.k8-condition-card label,
+.k8-condition-card input,
+.k8-condition-values {
+  position: relative;
+  z-index: 1;
+}
+
+.k8-condition-card label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.k8-condition-values {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.k8-condition-total {
+  background: transparent;
+  border-color: transparent;
+}
+
+.k8-condition-manual::placeholder {
+  color: #efe6d0;
+  opacity: 0.75;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.k8-condition-poise::before {
+  background-image: url("/systems/k8system/images/attributes/poise.png");
+}
+
+.k8-condition-fatigue::before {
+  background-image: url("/systems/k8system/images/attributes/fatigue.png");
+}
+
+.k8-condition-stress::before {
+  background-image: url("/systems/k8system/images/attributes/stress.png");
 }

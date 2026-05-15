@@ -1,0 +1,26 @@
+<section class="k8-modifiers-tab">
+  <div class="k8-conditions-grid">
+    <div class="k8-condition-card k8-condition-poise">
+      <label>Poise</label>
+      <input name="system.conditions.poise.value" type="number" value="{{system.conditions.poise.value}}" />
+    </div>
+
+    <div class="k8-condition-card k8-condition-fatigue" data-tooltip='{{{calculatedConditions.fatigue.tooltip}}}'>
+      <label>Fatigue</label>
+
+      <div class="k8-condition-values">
+        <input class="k8-condition-total" type="number" value="{{calculatedConditions.fatigue.value}}" readonly />
+        <input class="k8-condition-manual" name="system.conditions.fatigue.mod" type="number" value="{{#if system.conditions.fatigue.mod}}{{system.conditions.fatigue.mod}}{{/if}}" placeholder="mod" />
+      </div>
+    </div>
+
+    <div class="k8-condition-card k8-condition-stress" data-tooltip='{{{calculatedConditions.stress.tooltip}}}'>
+      <label>Stress</label>
+
+      <div class="k8-condition-values">
+        <input class="k8-condition-total" type="number" value="{{calculatedConditions.stress.value}}" readonly />
+        <input class="k8-condition-manual" name="system.conditions.stress.mod" type="number" value="{{#if system.conditions.stress.mod}}{{system.conditions.stress.mod}}{{/if}}" placeholder="mod" />
+      </div>
+    </div>
+  </div>
+</section>

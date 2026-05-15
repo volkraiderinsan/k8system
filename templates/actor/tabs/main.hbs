@@ -1,0 +1,153 @@
+<section class="k8-main-attributes">
+  <div class="k8-attr-card k8-attr-str">
+    <label>Str</label>
+    <input name="system.attributes.str.value" type="number" value="{{system.attributes.str.value}}" />
+  </div>
+
+  <div class="k8-attr-card k8-attr-for">
+    <label>For</label>
+    <input name="system.attributes.for.value" type="number" value="{{system.attributes.for.value}}" />
+  </div>
+
+  <div class="k8-attr-card k8-attr-ref">
+    <label>Ref</label>
+    <input name="system.attributes.ref.value" type="number" value="{{system.attributes.ref.value}}" />
+  </div>
+
+  <div class="k8-attr-card k8-attr-fit">
+    <label>Fit</label>
+    <input name="system.attributes.fit.value" type="number" value="{{system.attributes.fit.value}}" />
+  </div>
+
+  <div class="k8-attr-card k8-attr-sp">
+    <label>Sp</label>
+    <input name="system.attributes.sp.value" type="number" value="{{system.attributes.sp.value}}" />
+  </div>
+</section>
+
+<section class="k8-sheet-body">
+  <aside class="k8-derived-panel">
+    <h2>Stats</h2>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.move.tooltip}}}'>
+      <label>Move</label>
+      <input type="number" value="{{derived.move.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.fpr.tooltip}}}'>
+      <label>FPR</label>
+      <input type="number" value="{{derived.fpr.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.perception.tooltip}}}'>
+      <label>Perception</label>
+      <input type="number" value="{{derived.perception.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.bacc.tooltip}}}'>
+      <label>Bacc</label>
+      <input type="number" value="{{derived.bacc.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.macc.tooltip}}}'>
+      <label>Macc</label>
+      <input type="number" value="{{derived.macc.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.beff.tooltip}}}'>
+      <label>BEff</label>
+      <input type="number" value="{{derived.beff.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.strmod.tooltip}}}'>
+      <label>StrMod</label>
+      <input type="number" value="{{derived.strmod.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.fitmod.tooltip}}}'>
+      <label>FitMod</label>
+      <input type="number" value="{{derived.fitmod.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.focusres.tooltip}}}'>
+      <label>FocusRes</label>
+      <input type="number" value="{{derived.focusres.value}}" readonly />
+    </div>
+
+    <div class="k8-stat-row" data-tooltip='{{{derived.staminares.tooltip}}}'>
+      <label>StaminaRes</label>
+      <input type="number" value="{{derived.staminares.value}}" readonly />
+    </div>
+  </aside>
+
+  <section class="k8-body-panel">
+    <div class="k8-resources">
+      <div class="k8-resource">
+        <label>Focus</label>
+        <div>
+          <input name="system.resources.focus.value" type="number" value="{{system.resources.focus.value}}" />
+          <span>/</span>
+          <input type="number" value="{{calculatedResources.focus.value}}" readonly data-tooltip='{{{calculatedResources.focus.tooltip}}}' />
+        </div>
+      </div>
+
+      <div class="k8-resource">
+        <label>Stamina</label>
+        <div>
+          <input name="system.resources.stamina.value" type="number" value="{{system.resources.stamina.value}}" />
+          <span>/</span>
+          <input type="number" value="{{calculatedResources.stamina.value}}" readonly data-tooltip='{{{calculatedResources.stamina.tooltip}}}' />
+        </div>
+      </div>
+
+      <div class="k8-resource">
+        <label>Blood</label>
+        <div>
+          <input name="system.resources.blood.value" type="number" value="{{system.resources.blood.value}}" />
+          <span>/</span>
+          <input type="number" value="{{calculatedResources.blood.value}}" readonly data-tooltip='{{{calculatedResources.blood.tooltip}}}' />
+        </div>
+      </div>
+    </div>
+
+    <div class="k8-body-map">
+      <img
+        class="k8-character-silhouette"
+        src="systems/k8system/images/sheets/{{system.identity.gender}}.png"
+        alt="Character silhouette"
+      />
+
+      <div class="k8-defense-block k8-defense-head">
+        <h3>Head</h3>
+        <label>HP <input type="number" value="{{calculatedDefense.head.hp.value}}" readonly data-tooltip='{{{calculatedDefense.head.hp.tooltip}}}' /></label>
+        <label>Repulse <input type="number" value="{{calculatedDefense.head.repulse.value}}" readonly data-tooltip='{{{calculatedDefense.head.repulse.tooltip}}}' /></label>
+        <label>Resilience <input name="system.defense.head.resilience" type="number" value="{{system.defense.head.resilience}}" /></label>
+        <label>Armor <input name="system.defense.head.armor" type="number" value="{{system.defense.head.armor}}" /></label>
+      </div>
+
+      <div class="k8-defense-block k8-defense-arms">
+        <h3>Arms</h3>
+        <label>HP <input type="number" value="{{calculatedDefense.arms.hp.value}}" readonly data-tooltip='{{{calculatedDefense.arms.hp.tooltip}}}' /></label>
+        <label>Repulse <input type="number" value="{{calculatedDefense.arms.repulse.value}}" readonly data-tooltip='{{{calculatedDefense.arms.repulse.tooltip}}}' /></label>
+        <label>Resilience <input name="system.defense.arms.resilience" type="number" value="{{system.defense.arms.resilience}}" /></label>
+        <label>Armor <input name="system.defense.arms.armor" type="number" value="{{system.defense.arms.armor}}" /></label>
+      </div>
+
+      <div class="k8-defense-block k8-defense-torso">
+        <h3>Torso</h3>
+        <label>HP <input type="number" value="{{calculatedDefense.torso.hp.value}}" readonly data-tooltip='{{{calculatedDefense.torso.hp.tooltip}}}' /></label>
+        <label>Repulse <input type="number" value="{{calculatedDefense.torso.repulse.value}}" readonly data-tooltip='{{{calculatedDefense.torso.repulse.tooltip}}}' /></label>
+        <label>Resilience <input name="system.defense.torso.resilience" type="number" value="{{system.defense.torso.resilience}}" /></label>
+        <label>Armor <input name="system.defense.torso.armor" type="number" value="{{system.defense.torso.armor}}" /></label>
+      </div>
+
+      <div class="k8-defense-block k8-defense-legs">
+        <h3>Legs</h3>
+        <label>HP <input type="number" value="{{calculatedDefense.legs.hp.value}}" readonly data-tooltip='{{{calculatedDefense.legs.hp.tooltip}}}' /></label>
+        <label>Repulse <input type="number" value="{{calculatedDefense.legs.repulse.value}}" readonly data-tooltip='{{{calculatedDefense.legs.repulse.tooltip}}}' /></label>
+        <label>Resilience <input name="system.defense.legs.resilience" type="number" value="{{system.defense.legs.resilience}}" /></label>
+        <label>Armor <input name="system.defense.legs.armor" type="number" value="{{system.defense.legs.armor}}" /></label>
+      </div>
+    </div>
+  </section>
+</section>
