@@ -1,0 +1,33 @@
+<div class="k8-roll-card">
+  <header class="k8-roll-card-header">
+    <img src="{{actorImage}}" alt="{{actorName}}" />
+    <div>
+      <h2>{{title}}</h2>
+      <span>{{actorName}}</span>
+    </div>
+  </header>
+
+  <section class="k8-roll-card-result {{#if success}}success{{else}}failure{{/if}}">
+    <div class="k8-roll-main-number">{{rollTotal}}</div>
+    <div>
+      <strong>{{#if success}}Success{{else}}Failure{{/if}}</strong>
+      <span>{{degreesLabel}}</span>
+    </div>
+  </section>
+
+  <section class="k8-roll-details">
+    <div><span>Formula</span><strong>{{formula}}</strong></div>
+    <div><span>Target</span><strong>{{target}}</strong></div>
+    <div><span>Fatigue</span><strong>{{fatigue}}</strong></div>
+    <div><span>Manual Mod</span><strong>{{manualModifier}}</strong></div>
+  </section>
+
+  {{#if stress}}
+    <section class="k8-roll-stress {{#if stress.success}}success{{else}}failure{{/if}}">
+      <h3>Stress Check</h3>
+      <div><span>Roll</span><strong>{{stress.rollTotal}}</strong></div>
+      <div><span>Target</span><strong>{{stress.target}}</strong></div>
+      <div><span>Result</span><strong>{{#if stress.success}}Success{{else}}Failure{{/if}}</strong></div>
+    </section>
+  {{/if}}
+</div>

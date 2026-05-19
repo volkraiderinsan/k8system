@@ -31,7 +31,14 @@
     }
   ],
 
-  "packs": [],
+  "packs": [
+    {
+      "name": "conditions",
+      "label": "Conditions",
+      "path": "packs/conditions",
+      "type": "Item"
+    }
+  ],
 
   "primaryTokenAttribute": "resources.stamina",
   "secondaryTokenAttribute": "resources.blood",

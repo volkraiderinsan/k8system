@@ -10,7 +10,13 @@
 
       <div class="k8-condition-values">
         <input class="k8-condition-total" type="number" value="{{calculatedConditions.fatigue.value}}" readonly />
-        <input class="k8-condition-manual" name="system.conditions.fatigue.mod" type="number" value="{{#if system.conditions.fatigue.mod}}{{system.conditions.fatigue.mod}}{{/if}}" placeholder="mod" />
+        <input
+          class="k8-condition-manual"
+          name="system.conditions.fatigue.mod"
+          type="number"
+          value="{{#if system.conditions.fatigue.mod}}{{system.conditions.fatigue.mod}}{{/if}}"
+          placeholder="MOD"
+        />
       </div>
     </div>
 
@@ -19,8 +25,76 @@
 
       <div class="k8-condition-values">
         <input class="k8-condition-total" type="number" value="{{calculatedConditions.stress.value}}" readonly />
-        <input class="k8-condition-manual" name="system.conditions.stress.mod" type="number" value="{{#if system.conditions.stress.mod}}{{system.conditions.stress.mod}}{{/if}}" placeholder="mod" />
+        <input
+          class="k8-condition-manual"
+          name="system.conditions.stress.mod"
+          type="number"
+          value="{{#if system.conditions.stress.mod}}{{system.conditions.stress.mod}}{{/if}}"
+          placeholder="MOD"
+        />
       </div>
     </div>
   </div>
+
+  <section class="k8-condition-lists">
+    <div class="k8-condition-column" data-drop-polarity="positive">
+      <header class="k8-condition-column-header">
+        <h2>Positive Conditions</h2>
+        <button type="button" class="k8-condition-add" data-polarity="positive">
+        Add
+        </button>
+      </header>
+
+      <div class="k8-condition-scroll">
+        {{#each positiveConditions}}
+          <div class="k8-condition-entry" data-item-id="{{this.id}}">
+            <span class="k8-condition-name">{{this.name}}</span>
+
+            {{#if this.durationLabel}}
+              <span class="k8-condition-duration {{#if this.expired}}expired{{/if}}">
+                {{this.durationLabel}}
+              </span>
+            {{/if}}
+
+            <button
+              type="button"
+              class="k8-condition-delete"
+              data-item-id="{{this.id}}"
+            >
+              ×
+            </button>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="k8-condition-column" data-drop-polarity="negative">
+      <header class="k8-condition-column-header">
+        <h2>Negative Conditions</h2>
+        <button type="button" class="k8-condition-add" data-polarity="negative">
+        Add
+        </button>
+      </header>
+
+      <div class="k8-condition-scroll">
+        {{#each negativeConditions}}
+          <div class="k8-condition-entry" data-item-id="{{this.id}}">
+            <span class="k8-condition-name">{{this.name}}</span>
+
+            {{#if this.durationLabel}}
+              <span class="k8-condition-duration">{{this.durationLabel}}</span>
+            {{/if}}
+
+            <button
+              type="button"
+              class="k8-condition-delete"
+              data-item-id="{{this.id}}"
+            >
+              ×
+            </button>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </section>
 </section>

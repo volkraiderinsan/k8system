@@ -1,0 +1,183 @@
+<section class="k8-effect-sheet">
+  <header class="k8-effect-header">
+    <div class="k8-effect-image-frame {{#if editMode}}editable{{/if}}">
+      <img
+        class="k8-effect-image"
+        src="{{item.img}}"
+        title="{{#if editMode}}Click to change effect image{{else}}{{item.name}}{{/if}}"
+      />
+    </div>
+
+    {{#if editMode}}
+      <input class="k8-effect-name" name="name" type="text" value="{{item.name}}" placeholder="Effect Name" />
+
+        <button type="submit" class="k8-effect-edit-toggle k8-effect-save">
+        Save
+        </button>
+    {{else}}
+      <h1 class="k8-effect-title">{{item.name}}</h1>
+
+      <button type="button" class="k8-effect-edit k8-effect-edit-toggle">
+        Edit
+      </button>
+    {{/if}}
+  </header>
+
+  {{#if editMode}}
+    <section class="k8-effect-grid">
+      <div class="k8-effect-field">
+        <label>Category</label>
+        <select name="system.category">
+          {{selectOptions categoryOptions selected=system.category}}
+        </select>
+      </div>
+
+      <div class="k8-effect-field">
+        <label>Polarity</label>
+        <select name="system.polarity">
+          {{selectOptions polarityOptions selected=system.polarity}}
+        </select>
+      </div>
+
+      <div class="k8-effect-field">
+        <label>Severity</label>
+
+        <div class="k8-number-stepper">
+          <button type="button" class="k8-stepper-button" data-target="system.severity" data-step="-1">−</button>
+          <input name="system.severity" type="number" min="0" step="1" value="{{system.severity}}" />
+          <button type="button" class="k8-stepper-button" data-target="system.severity" data-step="1">+</button>
+        </div>
+      </div>
+
+        <div class="k8-effect-field">
+        <label>Duration</label>
+
+        <div class="k8-number-stepper">
+            <button type="button" class="k8-stepper-button" data-target="system.duration.value" data-step="-1">−</button>
+            <input name="system.duration.value" type="number" min="0" step="1" value="{{system.duration.value}}" />
+            <button type="button" class="k8-stepper-button" data-target="system.duration.value" data-step="1">+</button>
+        </div>
+        </div>
+
+      <div class="k8-effect-field">
+        <label>Unit</label>
+        <select name="system.duration.unit">
+          {{selectOptions durationUnitOptions selected=system.duration.unit}}
+        </select>
+      </div>
+
+        <div class="k8-effect-field">
+        <label>Remaining</label>
+
+        <div class="k8-number-stepper">
+            <button type="button" class="k8-stepper-button" data-target="system.duration.remaining" data-step="-1">−</button>
+            <input name="system.duration.remaining" type="number" min="0" step="1" value="{{system.duration.remaining}}" />
+            <button type="button" class="k8-stepper-button" data-target="system.duration.remaining" data-step="1">+</button>
+        </div>
+        </div>
+    </section>
+
+    <section class="k8-effect-modifiers">
+      <header class="k8-effect-modifiers-header">
+        <label>Modifiers</label>
+
+        <button type="button" class="k8-effect-modifier-add">
+          Add
+        </button>
+      </header>
+
+      <div class="k8-effect-modifier-list">
+        {{#each modifiers}}
+          <div
+            class="k8-effect-modifier-row {{#if isRoll}}is-roll-mod{{else}}is-stat-mod{{/if}} {{#unless showStatContext}}no-context{{/unless}}"
+            data-index="{{@index}}"
+            data-modifier-type="{{type}}"
+          >
+            <span class="k8-effect-modifier-type">
+              {{#if isRoll}}Roll{{else}}Stat{{/if}}
+            </span>
+
+            {{#if isRoll}}
+              <select name="system.modifiers.{{@index}}.context">
+                {{selectOptions ../modifierRollContextOptions selected=context}}
+              </select>
+            {{else}}
+              <select name="system.modifiers.{{@index}}.target">
+                {{selectOptions ../modifierTargetOptions selected=target}}
+              </select>
+
+              {{#if showStatContext}}
+                <select name="system.modifiers.{{@index}}.context">
+                  {{selectOptions statContextOptions selected=context}}
+                </select>
+              {{/if}}
+            {{/if}}
+
+            <input
+              name="system.modifiers.{{@index}}.value"
+              type="number"
+              value="{{value}}"
+            />
+
+            <label>
+              <input
+                name="system.modifiers.{{@index}}.useSeverity"
+                type="checkbox"
+                {{#if useSeverity}}checked{{/if}}
+              />
+              Sev
+            </label>
+
+            <button
+              type="button"
+              class="k8-effect-modifier-delete"
+              data-index="{{@index}}"
+            >
+              ×
+            </button>
+          </div>
+        {{/each}}
+      </div>
+    </section>
+
+        <section class="k8-effect-description">
+        <label>Description</label>
+
+        <textarea
+            class="k8-effect-description-input"
+            name="system.description"
+        >{{system.description}}</textarea>
+        </section>
+
+  {{else}}
+    <section class="k8-effect-readonly">
+      <div class="k8-effect-summary-row">
+        <span>Category</span>
+        <strong>{{system.category}}</strong>
+      </div>
+
+      <div class="k8-effect-summary-row">
+        <span>Polarity</span>
+        <strong>{{system.polarity}}</strong>
+      </div>
+
+      <div class="k8-effect-summary-row">
+        <span>Duration</span>
+        <strong>
+          {{#if (eq system.duration.unit "permanent")}}
+            Permanent
+          {{else}}
+            {{system.duration.remaining}} / {{system.duration.value}} {{system.duration.unit}}
+          {{/if}}
+        </strong>
+      </div>
+
+        <div class="k8-effect-summary-row">
+        <span>Modifiers</span>
+        <strong>{{{readonlyModifierText}}}</strong>
+        </div>
+
+        <div class="k8-effect-readonly-description">{{#if descriptionHtml}}{{{descriptionHtml}}}{{else}}<em>No description.</em>{{/if}}</div>
+    </section>
+  {{/if}}
+</section>

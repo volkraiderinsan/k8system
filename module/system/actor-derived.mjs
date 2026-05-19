@@ -1,3 +1,5 @@
+import { getK8ModifierColor } from "./k8-modifier-style.mjs";
+
 function fromTable(value, table) {
     const numeric = Number(value) || 0;
     const row = table.find(entry => numeric >= entry.min);
@@ -9,14 +11,7 @@ function fromTable(value, table) {
   }
   
   function sourceColor(value, options = {}) {
-    const positiveColor = "rgb(0, 232, 220)";
-    const negativeColor = "rgb(232, 89, 0)";
-  
-    if (options.negativeIsGood) {
-      return value <= 0 ? positiveColor : negativeColor;
-    }
-  
-    return value >= 0 ? positiveColor : negativeColor;
+    return getK8ModifierColor(options.target ?? "", value);
   }
   
   function makeTooltipLine(source, options = {}) {
@@ -29,12 +24,6 @@ function fromTable(value, table) {
     const value = options.min !== undefined ? Math.max(options.min, raw) : raw;
   
     const tooltipLines = sources.map(source => makeTooltipLine(source, options));
-  
-    if (options.min !== undefined && raw < options.min) {
-      tooltipLines.push(
-        `<span style="color: rgb(0, 232, 220);">minimum ${options.min}: +${options.min - raw}</span>`
-      );
-    }
   
     return {
       value,
@@ -236,7 +225,25 @@ function fromTable(value, table) {
   ];
   
   function collectBonuses(actor, key) {
-    return [];
+    return actor.items
+      .filter(item =>
+        item.type === "effect" &&
+        item.system.category === "condition" &&
+        Array.isArray(item.system.modifiers)
+      )
+      .flatMap(item => {
+        return item.system.modifiers
+        .filter(modifier => {
+          const type = modifier.type ?? (modifier.appliesTo ? "roll" : "stat");
+          const context = modifier.context ?? modifier.appliesTo ?? "";
+        
+          return type === "stat" && context === "" && modifier.target === key;
+        })
+          .map(modifier => ({
+            label: item.name,
+            value: Number(modifier.value) || 0
+          }));
+      });
   }
   
   export function calculateActorDerived(actor) {
@@ -254,7 +261,10 @@ function fromTable(value, table) {
       return makeStat([
         { label: baseLabel, value: baseValue },
         ...collectBonuses(actor, key)
-      ], options);
+      ], {
+        ...options,
+        target: key
+      });
     };
   
     const derived = {
@@ -315,16 +325,24 @@ function fromTable(value, table) {
           value: Number(actor.system.conditions.fatigue?.mod) || 0
         },
         ...collectBonuses(actor, "conditions.fatigue")
-      ]),
-    
+      ], {
+        target: "conditions.fatigue",
+        negativeIsGood: true,
+        min: 0
+      }),
+      
       stress: makeStat([
         {
           label: "stress mod",
           value: Number(actor.system.conditions.stress?.mod) || 0
         },
         ...collectBonuses(actor, "conditions.stress")
-      ])
-    };
+      ], {
+        target: "conditions.stress",
+        negativeIsGood: true,
+        min: 0
+      })
+    }
 
     return {
       derived,

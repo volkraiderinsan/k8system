@@ -122,11 +122,16 @@
     },
     "effect": {
       "templates": ["base"],
+      "category": "condition",
+      "polarity": "negative",
       "active": true,
+      "severity": 0,
       "duration": {
         "value": 0,
-        "unit": "round"
-      }
+        "unit": "round",
+        "remaining": 0
+      },
+      "modifiers": []
     }
   }
 }

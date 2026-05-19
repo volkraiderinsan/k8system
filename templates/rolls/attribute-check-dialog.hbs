@@ -1,0 +1,35 @@
+<form class="k8-roll-dialog k8-attribute-check-dialog">
+  <div class="k8-roll-dialog-inner">
+    <div class="k8-roll-dialog-top">
+      <img class="k8-roll-dialog-icon" src="{{icon}}" alt="{{title}}" />
+
+      <div class="k8-roll-manual-mod">
+        <label>Mod</label>
+        <input type="number" name="manualModifier" value="0" />
+      </div>
+    </div>
+
+    <button type="submit" class="k8-roll-submit" data-action="roll">
+      Roll
+    </button>
+
+    <section class="k8-roll-sources">
+      <div class="k8-roll-source">
+        <span>{{attributeLabel}}</span>
+        <strong>{{baseTarget}}</strong>
+      </div>
+
+      {{#each modifiers}}
+        <div class="k8-roll-source {{polarityClass}}">
+          <span>{{label}}</span>
+          <strong>{{signedValue}}</strong>
+        </div>
+      {{/each}}
+    </section>
+
+    <label class="k8-roll-checkbox">
+      <input type="checkbox" name="includeStress" {{#if includeStressDefault}}checked{{/if}} />
+      Stress Check
+    </label>
+  </div>
+</form>
