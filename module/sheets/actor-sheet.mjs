@@ -1,6 +1,38 @@
 import { rollAttributeCheck } from "../rolls/k8-rolls.mjs";
 import { calculateActorDerived } from "../system/actor-derived.mjs";
-import { closeK8WindowsByClass } from "../utils/k8-window-utils.mjs";
+import { waitK8SingletonDialog } from "../utils/k8-window-utils.mjs";
+import { K8ContainerSheet } from "./container-sheet.mjs";
+import { k8FloatingText } from "../utils/k8-floating-text.mjs";
+import { K8DiscardPileSheet } from "./discard-pile-sheet.mjs";
+import {
+  removeItemFromDiscardPileAndReturn
+} from "../utils/discard-pile.mjs";
+import { addItemToDiscardPile } from "../utils/discard-pile.mjs";
+import {
+  isItemValidForSlot,
+  smartPlaceIntoInventory,
+  getEquippedItemBySlot,
+  prepareDynamicSlots,
+  normalizeSocialSlots,
+  findBestEquipSlot,
+  equipItemToSlot,
+  createUnequippedItemData,
+  equipItemDataToActor,
+  equipContainerItemDataToActor,
+  equipDroppedDataToSlot,
+  reconcileDynamicSlots,
+  calculateStackMerge,
+  performStackSplit,
+  performInventoryDrop,
+  performInventoryHalfSplit,
+  promptAdvancedStackSplitQuantity,
+  stackSplitSourceFromDropData,
+  getStackSplitSourceItemData,
+  getInventorySourceItemData,
+  inventorySourceFromDropData,
+  getItemQuantity,
+  getItemStackMax
+} from "../system/inventory-rules.mjs";
 
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -11,7 +43,53 @@ function isRealImage(path) {
   return Boolean(path) && path !== DEFAULT_ACTOR_IMAGE && !path.includes("mystery-man");
 }
 
+const K8_BASE_EQUIPMENT_SLOTS = [
+  { key: "head", label: "Head", accepts: "Helmets" },
+  { key: "torso", label: "Torso", accepts: "Vests" },
+  { key: "arms", label: "Arms", accepts: "Arm protection" },
+  { key: "legs", label: "Legs", accepts: "Leg protection" },
+  { key: "outfit", label: "Outfit", accepts: "Clothes" },
+  { key: "back", label: "Back", accepts: "Backpacks / Heavy gear" },
+  { key: "battery", label: "Battery", accepts: "Power cells" },
+  { key: "shoulder-1", label: "Shoulder", accepts: "1x2 / 1x3 weapons" },
+  { key: "shoulder-2", label: "Shoulder", accepts: "1x2 / 1x3 weapons" },
+];
+
+function prepareEquipmentSlot(actor, slot) {
+  const item = getEquippedItemBySlot(actor, slot.key);
+
+  return {
+    ...slot,
+    item: item
+      ? {
+          id: item.id,
+          name: item.name,
+          img: item.img,
+          type: item.type,
+          quantity: Number(item.system?.quantity) || 1,
+          stackMax: Number(item.system?.stack?.max) || 1,
+          system: item.system
+        }
+      : null
+  };
+}
+
+
 export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+  static openSheets = new Set();
+
+  get actor() {
+    return this.document;
+  }
+
+  constructor(...args) {
+    super(...args);
+}
+
+async close(options = {}) {
+  K8ActorSheet.openSheets.delete(this);
+  return super.close(options);
+}
     static DEFAULT_OPTIONS = {
         tag: "form",
       
@@ -120,16 +198,71 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     .reverse()
     .map(prepareCondition);
   
-  context.negativeConditions = conditionEffects
+    context.negativeConditions = conditionEffects
     .filter(item => item.system.polarity === "negative")
     .reverse()
     .map(prepareCondition);
     
+    const extraShoulderSlots =
+    Number(this.actor.system?.equipment?.extraShoulderSlots) || 0;
+
+    const visibleEquipmentSlots = [...K8_BASE_EQUIPMENT_SLOTS];
+
+    for (let i = 0; i < extraShoulderSlots; i++) {
+      const shoulderIndex = i + 3;
+
+      visibleEquipmentSlots.push({
+        key: `shoulder-${shoulderIndex}`,
+        label: `Shoulder ${shoulderIndex}`,
+        accepts: "1x2 / 1x3 weapons"
+      });
+    }
+
+    context.equipmentSlots = visibleEquipmentSlots.map(slot =>
+      prepareEquipmentSlot(this.actor, slot)
+    );
+
+    context.dynamicEquipmentSlots = prepareDynamicSlots(this.actor);
+
+    context.inventoryItems = this.actor.items
+      .filter(item => item.type !== "effect")
+      .filter(item => item.system?.equipment?.equipped !== true)
+      .map(item => ({
+        id: item.id,
+        name: item.name,
+        img: item.img,
+        type: item.type,
+        width: Number(item.system?.inventory?.width) || 1,
+        height: Number(item.system?.inventory?.height) || 1,
+        quantity: Number(item.system?.quantity) || 1,
+        stackMax: Number(item.system?.stack?.max) || 1
+      }));
+    
+      context.discardPileCount =
+      game.settings.get("k8system", "discardPile")?.items?.length ?? 0;
+
     return context;
   }
 
   async _onRender(context, options) {
     await super._onRender(context, options);
+
+    K8ActorSheet.openSheets.add(this);
+
+    const debugInventoryToggle = this.element.querySelector(".k8-debug-inventory-toggle");
+    const debugInventory = this.element.querySelector(".k8-dev-inventory");
+
+    debugInventoryToggle?.addEventListener("click", event => {
+      event.preventDefault();
+      debugInventory?.classList.toggle("hidden");
+    });
+
+    const discardButton = this.element.querySelector(".k8-discard-pile-button");
+
+    discardButton?.addEventListener("click", event => {
+      event.preventDefault();
+      new K8DiscardPileSheet().render(true);
+    });
 
     const genderSelect = this.element.querySelector('select[name="system.identity.gender"]');
     if (genderSelect) {
@@ -220,9 +353,7 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
           return;
         }
         
-        await closeK8WindowsByClass("k8-add-condition-window");
-
-        const choice = await foundry.applications.api.DialogV2.wait({
+        const choice = await waitK8SingletonDialog("add-condition", {
           window: {
             title: "Add Condition"
           },
@@ -327,6 +458,9 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         if (!item) return;
     
         await item.delete();
+
+        await normalizeSocialSlots(this.actor);
+
         await this.render(true);
       });
     }
@@ -387,5 +521,528 @@ export class K8ActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         await this.render(true);
       });
     }
+
+    const draggableItems = this.element.querySelectorAll(".k8-draggable-item");
+
+    const actorInventory =
+      this.element.querySelector(".k8-dev-inventory");
+
+    actorInventory?.addEventListener("click", async event => {
+      if (!event.shiftKey) return;
+
+      const itemElement =
+        event.target.closest(".k8-dev-item.k8-draggable-item");
+
+      if (!itemElement) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const itemId = itemElement.dataset.itemId;
+      if (!itemId) return;
+
+      const source = {
+        type: "actorItem",
+        actor: this.actor,
+        itemId
+      };
+
+      const sourceItemData =
+        await getInventorySourceItemData(source);
+
+      if (!sourceItemData) return;
+
+      const result =
+        await performInventoryHalfSplit({
+          source,
+          target: {
+            type: "actorInventory",
+            actor: this.actor
+          }
+        });
+
+      if (!result.ok) {
+        k8FloatingText(event, result.message, "warn");
+        return;
+      }
+
+      await this.render(true);
+
+      k8FloatingText(
+        event,
+        `${sourceItemData.name} split.`,
+        "status"
+      );
+    });
+
+    actorInventory?.addEventListener("dragover", event => {
+      if (!globalThis.k8DragItem?.advancedSplit) return;
+      event.preventDefault();
+    });
+
+    actorInventory?.addEventListener("drop", async event => {
+      const dataText =
+        event.dataTransfer.getData("text/plain");
+
+      if (!dataText) return;
+
+      let data;
+
+      try {
+        data = JSON.parse(dataText);
+      } catch {
+        return;
+      }
+
+      if (!data.advancedSplit) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const source =
+        await getInventorySourceItemData(
+          await inventorySourceFromDropData(data, this.actor)
+        );
+
+      if (!source) return;
+
+      const splitQuantity =
+        await promptAdvancedStackSplitQuantity(source);
+
+      if (!splitQuantity) return;
+
+      const result =
+        await performInventoryDrop({
+          data,
+          target: {
+            type: "actorInventory",
+            actor: this.actor
+          },
+          fallbackActor: this.actor,
+          splitQuantity
+        });
+
+      if (!result.ok) {
+        k8FloatingText(event, result.message, "warn");
+        return;
+      }
+
+      await this.render(true);
+
+      for (const sheet of K8ContainerSheet.openSheets ?? []) {
+        await sheet.render(true);
+      }
+
+      for (const sheet of globalThis.k8DiscardPileSheets ?? []) {
+        await sheet.render(true);
+      }
+
+      k8FloatingText(
+        event,
+        `${source.name} split.`,
+        "status"
+      );
+    });
+
+    const equippedItems = this.element.querySelectorAll(".k8-paperdoll-slot[data-item-id]");
+
+    for (const element of equippedItems) {
+      element.addEventListener("dblclick", async event => {
+        event.preventDefault();
+
+        const itemId = element.dataset.itemId;
+        if (!itemId) return;
+
+        const item = this.actor.items.get(itemId);
+        if (!item) return;
+
+        await item.sheet.render(true);
+        item.sheet.bringToFront?.();
+      });
+    }
+
+    for (const element of draggableItems) {
+      element.addEventListener("click", async event => {
+        if (!event.ctrlKey) return;
+      
+        event.preventDefault();
+        event.stopPropagation();
+      
+        const itemId = element.dataset.itemId;
+        if (!itemId) return;
+      
+        const item = this.actor.items.get(itemId);
+        if (!item) return;
+      
+        await item.delete();
+        await this.render(true);
+      });
+      element.addEventListener("dragstart", event => {
+        const itemId = element.dataset.itemId;
+        if (!itemId) return;
+    
+        const item = this.actor.items.get(itemId);
+        if (!item) return;
+    
+        this._k8DraggedItemId = itemId;
+
+        const itemData =
+          item.toObject();
+
+        const advancedSplit =
+          event.shiftKey &&
+          getItemStackMax(itemData) > 1 &&
+          getItemQuantity(itemData) > 1;
+
+        globalThis.k8DragItem = {
+          type: "Item",
+          itemData,
+          advancedSplit
+        };
+
+        setTimeout(() => {
+          for (const sheet of K8ContainerSheet.openSheets ?? []) {
+            sheet.bringToFront?.();
+        
+            const app = sheet.element.closest(".application");
+            if (!app) continue;
+        
+            app.dataset.k8PreviousZIndex = app.style.zIndex ?? "";
+            app.style.zIndex = "999999";
+          }
+        }, 0);
+    
+        event.dataTransfer.setData("text/plain", JSON.stringify({
+          type: "Item",
+          actorId: this.actor.id,
+          itemId,
+          uuid: item.uuid,
+          advancedSplit
+        }));
+      });
+
+      element.addEventListener("dragend", () => {
+        this._k8DraggedItemId = null;
+        this._k8DragPreview?.remove();
+        this._k8DragPreview = null;
+        globalThis.k8DragItem = null;
+      
+        for (const sheet of K8ContainerSheet.openSheets ?? []) {
+          const app = sheet.element.closest(".application");
+          if (!app) continue;
+      
+          app.style.zIndex = app.dataset.k8PreviousZIndex ?? "";
+          delete app.dataset.k8PreviousZIndex;
+        }
+      });
+    }
+
+    const equipmentSlots = this.element.querySelectorAll(".k8-paperdoll-slot");
+
+    for (const slot of equipmentSlots) {
+      slot.addEventListener("dragover", event => {
+        event.preventDefault();
+      
+        slot.classList.remove("drag-valid", "drag-invalid");
+      
+        const itemId = this._k8DraggedItemId;
+
+        let item = null;
+
+        if (itemId) {
+          item = this.actor.items.get(itemId);
+        } else {
+          item = globalThis.k8DragItem?.itemData ?? null;
+        }
+
+        if (!item) {
+          slot.classList.add("drag-valid");
+          return;
+        }
+
+        globalThis.k8DragItem = {
+          type: globalThis.k8DragItem?.type ?? "Item",
+          itemData: item.toObject
+            ? item.toObject()
+            : foundry.utils.deepClone(item),
+          advancedSplit:
+            globalThis.k8DragItem?.advancedSplit === true
+        };
+      
+        const valid = isItemValidForSlot(item, slot.dataset.slot);
+      
+        slot.classList.add(valid ? "drag-valid" : "drag-invalid");
+      });
+
+      slot.addEventListener("dragleave", () => {
+        slot.classList.remove(
+          "drag-hover",
+          "drag-valid",
+          "drag-invalid"
+        );
+      });
+
+      slot.addEventListener("drop", async event => {
+        event.preventDefault();
+        event.stopPropagation();
+      
+        slot.classList.remove(
+          "drag-hover",
+          "drag-valid",
+          "drag-invalid"
+        );
+      
+        this._k8DraggedItemId = null;
+      
+        const slotKey = slot.dataset.slot;
+        if (!slotKey) return;
+      
+        const dataText = event.dataTransfer.getData("text/plain");
+        if (!dataText) return;
+      
+        let data;
+      
+        try {
+          data = JSON.parse(dataText);
+        } catch {
+          return;
+        }
+      
+        let item = null;
+      
+        // ---------------------------------------------------
+        // ITEM FROM CONTAINER
+        // ---------------------------------------------------
+      
+        const equipResult =
+        await equipDroppedDataToSlot(
+          this.actor,
+          data,
+          slotKey,
+          {
+            onPlace: async containerItem => {
+              await K8ContainerSheet.renderSheetsForItem(
+                containerItem.uuid
+              );
+            },
+
+            onFail: async item => {
+              k8FloatingText(
+                null,
+                `${item.name} could not be unloaded.`,
+                "warn"
+              );
+            }
+          }
+        );
+
+      if (!equipResult.ok) {
+        k8FloatingText(
+          event,
+          equipResult.message,
+          "warn"
+        );
+
+        return;
+      }
+
+      item = equipResult.item ?? this.actor.items.get(data.itemId) ?? null;
+
+      if (equipResult.swapped) {
+        const itemName =
+          item?.name ?? globalThis.k8DragItem?.itemData?.name ?? "Item";
+
+        const swappedName =
+          equipResult.swappedItem?.name ?? "item";
+
+        k8FloatingText(
+          event,
+          `${itemName} swapped with ${swappedName}`,
+          "status"
+        );
+      }
+        if (data.type === "K8DiscardItem") {
+          for (const sheet of globalThis.k8DiscardPileSheets ?? []) {
+            await sheet.render(true);
+          }
+        }
+        await this.render(true);
+      });
+
+      slot.addEventListener("contextmenu", async event => {
+        event.preventDefault();
+      
+        const slotKey = slot.dataset.slot;
+        if (!slotKey) return;
+      
+        const equippedItem = this.actor.items.find(item =>
+          item.system?.equipment?.equipped === true &&
+          item.system?.equipment?.slot === slotKey
+        );
+      
+        if (!equippedItem) return;
+      
+        if (event.shiftKey) {
+          const moved = await this._moveEquippedItemToSmartContainer(
+            equippedItem,
+            event
+          );
+        
+          if (moved) {
+            await this.render(true);
+          }
+        
+          return;
+        }
+      
+        if (equippedItem.system?.container?.enabled === true) {
+          new K8ContainerSheet(equippedItem).render(true);
+          return;
+        }
+      });
+    }
   }
+  async _moveEquippedItemToSmartContainer(item, event) {
+    const isNonEmptyGridContainer =
+    item.system?.container?.enabled === true &&
+    item.system?.container?.kind === "grid" &&
+    (item.system?.container?.items ?? []).length > 0;
+
+    if (isNonEmptyGridContainer) {
+      k8FloatingText(event, "Cannot move non-empty grid container.", "warn");
+      return false;
+    }
+    const itemData =
+    createUnequippedItemData(
+      item.toObject()
+    );
+
+    const result =
+      await smartPlaceIntoInventory(
+        this.actor,
+        itemData,
+        {
+          excludedContainerIds: [
+            item.id
+          ],
+
+          onPlace: async containerItem => {
+
+            await K8ContainerSheet.renderSheetsForItem(
+              containerItem.uuid
+            );
+          }
+        }
+      );
+
+    if (!result.ok) {
+
+      k8FloatingText(
+        event,
+        result.message,
+        "warn"
+      );
+
+      return false;
+    }
+
+    await item.delete();
+
+    await normalizeSocialSlots(
+      this.actor
+    );
+
+    k8FloatingText(
+      event,
+      `${item.name} moved to ${result.containerItem.name}`,
+      "status"
+    );
+
+    return true;
+    }
+  
+    async receiveItemFromDiscardPile(itemData, event) {
+      const moved =
+        await smartPlaceIntoInventory(
+          this.actor,
+          foundry.utils.deepClone(itemData),
+          {
+            onPlace: async containerItem => {
+              await K8ContainerSheet.renderSheetsForItem(
+                containerItem.uuid
+              );
+            }
+          }
+        );
+    
+      if (moved.ok) {
+        k8FloatingText(
+          event,
+          `${itemData.name} moved to ${this.actor.name}'s inventory`,
+          "status"
+        );
+    
+        await this.render(true);
+        return true;
+      }
+    
+      const targetSlot =
+        findBestEquipSlot(
+          this.actor,
+          itemData,
+          K8_BASE_EQUIPMENT_SLOTS
+        );
+    
+      if (!targetSlot) {
+        k8FloatingText(
+          event,
+          "Not enough space in inventory",
+          "warn"
+        );
+    
+        return false;
+      }
+    
+      const equipResult =
+        await equipItemDataToActor(
+          this.actor,
+          itemData,
+          targetSlot,
+          {
+            onPlace: async containerItem => {
+              await K8ContainerSheet.renderSheetsForItem(
+                containerItem.uuid
+              );
+            }
+          }
+        );
+    
+      if (!equipResult.ok) {
+        k8FloatingText(
+          event,
+          equipResult.message,
+          "warn"
+        );
+    
+        return false;
+      }
+    
+      await this.render(true);
+    
+      if (equipResult.swapped) {
+        k8FloatingText(
+          event,
+          `${itemData.name} swapped with ${equipResult.swappedItem.name}`,
+          "status"
+        );
+      } else {
+        k8FloatingText(
+          event,
+          `${itemData.name} equipped by ${this.document.name} in ${targetSlot}`,
+          "status"
+        );
+      }
+    
+      return true;
+    }
 }

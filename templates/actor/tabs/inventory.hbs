@@ -1,4 +1,169 @@
-<section class="k8-tab-placeholder">
-  <h2>Inventory</h2>
-  <p>Paperdoll and inventory grid will be added here.</p>
+<section class="k8-inventory-tab">
+  <div class="k8-paperdoll-panel">
+    <div class="k8-paperdoll-stage">
+      <img
+        class="k8-inventory-character-silhouette"
+        src="systems/k8system/images/sheets/{{system.identity.gender}}.png"
+        alt="Character silhouette"
+      />
+
+      {{#each equipmentSlots}}
+        <div
+            class="k8-paperdoll-slot k8-paperdoll-slot-{{key}}"
+            data-slot="{{key}}"
+            data-item-id="{{item.id}}"
+          >
+          {{#if item}}
+            <div class="k8-item-icon-frame">
+              <img
+                class="k8-paperdoll-item-img k8-draggable-item"
+                src="{{item.img}}"
+                alt="{{item.name}}"
+                draggable="true"
+                data-item-id="{{item.id}}"
+              />
+
+              {{#if (ne item.stackMax 1)}}
+                <div class="k8-stack-counter">
+                  {{item.quantity}}
+                </div>
+              {{/if}}
+            </div>
+          {{else}}
+            <div class="k8-paperdoll-slot-label">{{label}}</div>
+          {{/if}}
+        </div>
+      {{/each}}
+
+      <div class="k8-paperdoll-dynamic k8-paperdoll-quick-slots">
+        {{#each dynamicEquipmentSlots.quick}}
+          <div
+              class="k8-paperdoll-slot k8-paperdoll-slot-small"
+              data-slot="{{key}}"
+              data-item-id="{{item.id}}"
+            >
+            {{#if item}}
+              <div class="k8-item-icon-frame">
+                <img
+                  class="k8-paperdoll-item-img k8-draggable-item"
+                  src="{{item.img}}"
+                  alt="{{item.name}}"
+                  draggable="true"
+                  data-item-id="{{item.id}}"
+                />
+
+                {{#if (ne item.system.stack.max 1)}}
+                  <div class="k8-stack-counter">
+                    {{item.system.quantity}}
+                  </div>
+                {{/if}}
+              </div>
+            {{else}}
+              <div class="k8-paperdoll-slot-label">Quick</div>
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+
+      <div class="k8-paperdoll-dynamic k8-paperdoll-tactical-slots">
+        {{#each dynamicEquipmentSlots.tactical}}
+          <div
+            class="k8-paperdoll-slot k8-paperdoll-slot-small"
+            data-slot="{{key}}"
+            data-item-id="{{item.id}}"
+          >
+            {{#if item}}
+              <div class="k8-item-icon-frame">
+                <img
+                  class="k8-paperdoll-item-img k8-draggable-item"
+                  src="{{item.img}}"
+                  alt="{{item.name}}"
+                  draggable="true"
+                  data-item-id="{{item.id}}"
+                />
+
+                {{#if (ne item.system.stack.max 1)}}
+                  <div class="k8-stack-counter">
+                    {{item.system.quantity}}
+                  </div>
+                {{/if}}
+              </div>
+            {{else}}
+              <div class="k8-paperdoll-slot-label">Tactical</div>
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+
+      <div class="k8-paperdoll-dynamic k8-paperdoll-social-slots">
+        {{#each dynamicEquipmentSlots.social}}
+          <div
+              class="k8-paperdoll-slot k8-paperdoll-slot-small"
+              data-slot="{{key}}"
+              data-item-id="{{item.id}}"
+            >
+            {{#if item}}
+              <div class="k8-item-icon-frame">
+                <img
+                  class="k8-paperdoll-item-img k8-draggable-item"
+                  src="{{item.img}}"
+                  alt="{{item.name}}"
+                  draggable="true"
+                  data-item-id="{{item.id}}"
+                />
+
+                {{#if (ne item.system.stack.max 1)}}
+                  <div class="k8-stack-counter">
+                    {{item.system.quantity}}
+                  </div>
+                {{/if}}
+              </div>
+            {{else}}
+              <div class="k8-paperdoll-slot-label">Social</div>
+            {{/if}}
+          </div>
+        {{/each}}
+      </div>
+      <button type="button" class="k8-debug-inventory-toggle">
+        Debug Inv
+      </button>
+      <button type="button" class="k8-discard-pile-button">
+        <img src="systems/k8system/images/discard.png" alt="Discard Pile">
+        {{#if discardPileCount}}
+          <span>{{discardPileCount}}</span>
+        {{/if}}
+      </button>
+
+      <section class="k8-dev-inventory hidden">
+      <div class="k8-dev-inventory-title">
+          Inventory
+        </div>
+
+        <div class="k8-dev-inventory-grid">
+          {{#each inventoryItems}}
+            <div
+              class="k8-dev-item k8-draggable-item"
+              draggable="true"
+              data-item-id="{{id}}"
+            >
+              <div class="k8-item-icon-frame">
+                <img src="{{img}}" alt="{{name}}" />
+
+                {{#if (or (ne quantity 1) (ne stackMax 1))}}
+                  <div class="k8-stack-counter">
+                    {{quantity}}/{{stackMax}}
+                  </div>
+                {{/if}}
+              </div>
+
+              <div class="k8-dev-item-name">
+                {{name}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </section>
+      </section>
+    </div>
+  </div>
 </section>

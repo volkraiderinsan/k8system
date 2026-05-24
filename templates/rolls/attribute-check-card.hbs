@@ -1,33 +1,91 @@
-<div class="k8-roll-card">
-  <header class="k8-roll-card-header">
-    <img src="{{actorImage}}" alt="{{actorName}}" />
-    <div>
-      <h2>{{title}}</h2>
-      <span>{{actorName}}</span>
-    </div>
-  </header>
+<div
+  class="k8-chat-roll-card k8-attribute-roll-card"
+  data-k8-card-type="attribute-check"
+  data-actor-uuid="{{actorUuid}}"
+  data-attribute-key="{{attributeKey}}"
+  data-manual-modifier="{{manualModifier}}"
+  data-include-stress="{{includeStress}}"
+>
+  <div
+    class="k8-roll-background-icon"
+    style="background-image: url('{{attributeIcon}}');"
+  ></div>
 
-  <section class="k8-roll-card-result {{#if success}}success{{else}}failure{{/if}}">
-    <div class="k8-roll-main-number">{{rollTotal}}</div>
-    <div>
-      <strong>{{#if success}}Success{{else}}Failure{{/if}}</strong>
-      <span>{{degreesLabel}}</span>
+  <section class="k8-roll-result-line">
+    <span class="k8-roll-result-label">{{attributeLabel}} check:</span>
+
+    <div class="k8-roll-result-cluster">
+      {{#if showCriticalIcon}}
+        <div class="k8-critical-marker-frame">
+          <span class="k8-critical-marker {{criticalPolarityClass}}"></span>
+
+          {{#if critCanceledByStress}}
+            <span class="k8-xmark-overlay"></span>
+          {{/if}}
+        </div>
+      {{/if}}
+
+      <div class="k8-roll-result-wrapper">
+        <span
+          class="k8-roll-result-box {{#if success}}success{{else}}failure{{/if}}"
+        >
+          {{#if rollCanceledByStress}}
+            <span class="k8-xmark-overlay"></span>
+          {{/if}}
+
+          <span class="k8-roll-result-value">{{rollTotal}}</span>
+        </span>
+
+        <div class="k8-roll-tooltip">
+          <div class="k8-roll-tooltip-line">
+            <span>Formula</span>
+            <strong>{{formula}}</strong>
+          </div>
+
+          <div class="k8-roll-tooltip-line">
+            <span>Target</span>
+            <strong>{{target}}</strong>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="k8-roll-details">
-    <div><span>Formula</span><strong>{{formula}}</strong></div>
-    <div><span>Target</span><strong>{{target}}</strong></div>
-    <div><span>Fatigue</span><strong>{{fatigue}}</strong></div>
-    <div><span>Manual Mod</span><strong>{{manualModifier}}</strong></div>
-  </section>
+  <div class="k8-roll-degree-line {{#if success}}success{{else}}failure{{/if}}">
+    {{#if success}}Success{{else}}Failure{{/if}}: {{degreeText}}
+  </div>
 
   {{#if stress}}
-    <section class="k8-roll-stress {{#if stress.success}}success{{else}}failure{{/if}}">
-      <h3>Stress Check</h3>
-      <div><span>Roll</span><strong>{{stress.rollTotal}}</strong></div>
-      <div><span>Target</span><strong>{{stress.target}}</strong></div>
-      <div><span>Result</span><strong>{{#if stress.success}}Success{{else}}Failure{{/if}}</strong></div>
+    <section class="k8-roll-result-line k8-roll-stress-line">
+      <span class="k8-roll-result-label">Stress check:</span>
+
+      <div class="k8-roll-result-wrapper">
+        <span
+          class="k8-roll-result-box {{#if stress.success}}success{{else}}failure{{/if}}"
+        >
+          {{#if stress.canceledByCrit}}
+            <span class="k8-xmark-overlay"></span>
+          {{/if}}
+
+          <span class="k8-roll-result-value">{{stress.rollTotal}}</span>
+        </span>
+
+        <div class="k8-roll-tooltip">
+          <div class="k8-roll-tooltip-line">
+            <span>Formula</span>
+            <strong>{{stress.formula}}</strong>
+          </div>
+
+          <div class="k8-roll-tooltip-line">
+            <span>Target</span>
+            <strong>{{stress.target}}</strong>
+          </div>
+        </div>
+      </div>
     </section>
   {{/if}}
+
+  <button type="button" class="k8-roll-repeat">
+    Repeat roll
+  </button>
 </div>

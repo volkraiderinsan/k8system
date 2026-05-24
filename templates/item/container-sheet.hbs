@@ -1,0 +1,43 @@
+<section class="k8-container-sheet">
+  <section
+    class="k8-container-grid-wrapper"
+  >
+    <section
+        class="k8-container-grid"
+        style="{{gridStyle}}"
+        data-grid="true"
+        >
+      {{#each gridCells}}
+        <div
+          class="k8-container-cell"
+          data-x="{{x}}"
+          data-y="{{y}}"
+        ></div>
+      {{/each}}
+
+        <div class="k8-container-placement-preview"></div>
+
+      {{#each containerItems}}
+        <div
+          class="k8-container-item"
+          style="{{style}}"
+          data-item-id="{{id}}"
+          draggable="true"
+        >
+          <div class="k8-item-icon-frame">
+            <img
+              src="{{img}}"
+              alt="{{name}}"
+            />
+
+            {{#if (ne system.stack.max 1)}}
+              <div class="k8-stack-counter">
+                {{system.quantity}}
+              </div>
+            {{/if}}
+          </div>
+        </div>
+      {{/each}}
+    </section>
+  </section>
+</section>

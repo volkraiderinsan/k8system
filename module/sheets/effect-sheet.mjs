@@ -1,4 +1,4 @@
-import { closeK8WindowsByClass } from "../utils/k8-window-utils.mjs";
+import { waitK8SingletonDialog } from "../utils/k8-window-utils.mjs";
 import { activateK8MarkdownDrop, renderK8Markdown } from "../utils/k8-markdown.mjs";
 import {
   K8_MODIFIER_TYPE_OPTIONS,
@@ -345,8 +345,7 @@ export class K8EffectSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   }
   
   async #chooseModifierType() {
-    await closeK8WindowsByClass("k8-add-modifier-window");
-    return foundry.applications.api.DialogV2.wait({
+    return waitK8SingletonDialog("add-modifier", {
       window: {
         title: "Add modifier"
       },

@@ -1,0 +1,546 @@
+<div class="k8-item-sheet-body is-readonly">
+
+  <header class="k8-item-header">
+
+    <div class="k8-item-image-wrapper">
+
+      <img
+        class="k8-item-image"
+        src="{{item.img}}"
+        alt="{{item.name}}"
+      />
+
+      <button
+        type="button"
+        hidden
+        data-action="edit-image-hidden"
+      ></button>
+
+    </div>
+
+    <div class="k8-item-header-fields">
+
+      <div class="k8-item-title-row">
+
+        <input
+          type="text"
+          name="name"
+          value="{{item.name}}"
+          placeholder="Item name"
+        />
+
+        <button
+          type="button"
+          class="k8-item-edit-toggle"
+          data-action="toggle-edit-mode"
+        >
+          Edit
+        </button>
+
+      </div>
+
+      <div class="k8-item-type">
+        {{type}}
+      </div>
+
+      {{!-- ====================================== --}}
+      {{!-- READONLY SUMMARY                       --}}
+      {{!-- ====================================== --}}
+
+          <div class="k8-item-readonly-summary">
+
+        <div class="k8-item-summary-card">
+          <span class="label">Price</span>
+          <span class="value">{{system.price.value}}</span>
+        </div>
+
+        <div class="k8-item-summary-card">
+          <span class="label">Size</span>
+          <span class="value">{{system.inventory.height}}x{{system.inventory.width}}</span>
+        </div>
+
+        {{#if
+          (or
+            (ne system.quantity 1)
+            (ne system.stack.max 1)
+          )
+        }}
+          <div class="k8-item-summary-card">
+            <span class="label">Quantity</span>
+            <span class="value">{{system.quantity}} / {{system.stack.max}}</span>
+          </div>
+        {{/if}}
+
+        {{#if system.container.enabled}}
+        <div class="k8-item-summary-card is-container">
+            <span class="label">Container</span>
+        </div>
+        {{/if}}
+
+        {{#if system.equipment.equipped}}
+        <div class="k8-item-summary-card is-equipped">
+            <span class="label">Equipped</span>
+        </div>
+        {{/if}}
+
+      </div>
+
+    </div>
+
+  </header>
+
+  {{!-- ====================================== --}}
+  {{!-- READONLY MODE                          --}}
+  {{!-- ====================================== --}}
+
+  <section class="k8-readonly-panel">
+
+  <div class="k8-readonly-card">
+
+    <div class="k8-readonly-card-title">
+      Description
+    </div>
+
+    <div class="k8-item-description">
+      {{{descriptionHtml}}}
+    </div>
+
+  </div>
+
+  {{#if (eq type "weapon")}}
+
+    <div class="k8-readonly-card">
+
+      <div class="k8-readonly-card-title">
+        Weapon Profile
+      </div>
+
+      <div class="k8-readonly-stats">
+
+        <div>
+          <span>Category</span>
+          <strong>{{system.weapon.category}}</strong>
+        </div>
+
+        <div>
+          <span>Damage</span>
+          <strong>{{system.weapon.damage.formula}}</strong>
+        </div>
+
+        <div>
+          <span>Attack</span>
+          <strong>{{system.weapon.attack.single}}</strong>
+        </div>
+
+        <div>
+          <span>Parry</span>
+          <strong>{{system.weapon.attack.parry}}</strong>
+        </div>
+
+        <div>
+          <span>Reliability</span>
+          <strong>{{system.weapon.reliability}}</strong>
+        </div>
+
+        <div>
+          <span>Mod Slots</span>
+          <strong>{{system.weapon.modSlots}}</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  {{/if}}
+
+  {{#if (eq type "armor")}}
+
+    <div class="k8-readonly-card">
+
+      <div class="k8-readonly-card-title">
+        Armor Profile
+      </div>
+
+      <div class="k8-readonly-stats">
+
+        <div>
+          <span>Repulse</span>
+          <strong>{{system.armor.repulse}}</strong>
+        </div>
+
+        <div>
+          <span>Resilience</span>
+          <strong>{{system.armor.resilience}}</strong>
+        </div>
+
+        <div>
+          <span>Armor</span>
+          <strong>{{system.armor.armor}}</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  {{/if}}
+
+</section>
+
+  {{!-- ====================================== --}}
+  {{!-- EDIT MODE                              --}}
+  {{!-- ====================================== --}}
+
+  <section class="k8-editor-panel">
+
+    <nav class="k8-item-editor-tabs">
+
+      {{#each itemEditorTabs as |tab|}}
+        <button
+          type="button"
+          data-k8-item-tab="{{tab.key}}"
+        >
+          {{tab.label}}
+        </button>
+      {{/each}}
+
+    </nav>
+
+    {{!-- ====================================== --}}
+    {{!-- CORE                                   --}}
+    {{!-- ====================================== --}}
+
+    <section
+      class="k8-item-tab-panel"
+      data-k8-item-tab-panel="core"
+    >
+
+      <div class="k8-item-grid">
+
+        <label>
+          Quantity
+
+          <input
+            type="number"
+            name="system.quantity"
+            value="{{system.quantity}}"
+          />
+        </label>
+
+        <label>
+          Price
+
+          <input
+            type="number"
+            name="system.price.value"
+            value="{{system.price.value}}"
+          />
+        </label>
+
+        <label>
+          Stack Max
+
+          <input
+            type="number"
+            name="system.stack.max"
+            value="{{system.stack.max}}"
+          />
+        </label>
+
+        <label>
+          Width
+
+          <input
+            type="number"
+            name="system.inventory.width"
+            value="{{system.inventory.width}}"
+          />
+        </label>
+
+        <label>
+          Height
+
+          <input
+            type="number"
+            name="system.inventory.height"
+            value="{{system.inventory.height}}"
+          />
+        </label>
+
+        <label>
+          Equipped
+
+          <input
+            type="checkbox"
+            name="system.equipment.equipped"
+            {{checked system.equipment.equipped}}
+          />
+        </label>
+
+        <label>
+          Slot Type
+
+          <select name="system.equipment.slotType">
+
+            <option value=""></option>
+
+            {{#each equipmentSlots}}
+
+              <option
+                value="{{this}}"
+                {{#if (eq ../system.equipment.slotType this)}}
+                  selected
+                {{/if}}
+              >
+                {{this}}
+              </option>
+
+            {{/each}}
+
+          </select>
+
+        </label>
+
+      </div>
+
+      {{#if (eq type "weapon")}}
+
+        <div class="k8-item-grid">
+
+          <label>
+            Category
+
+            <input
+              type="text"
+              name="system.weapon.category"
+              value="{{system.weapon.category}}"
+            />
+          </label>
+
+          <label>
+            Damage
+
+            <input
+              type="text"
+              name="system.weapon.damage.formula"
+              value="{{system.weapon.damage.formula}}"
+            />
+          </label>
+
+          <label>
+            Attack
+
+            <input
+              type="number"
+              name="system.weapon.attack.single"
+              value="{{system.weapon.attack.single}}"
+            />
+          </label>
+
+          <label>
+            Parry
+
+            <input
+              type="number"
+              name="system.weapon.attack.parry"
+              value="{{system.weapon.attack.parry}}"
+            />
+          </label>
+
+          <label>
+            Reliability
+
+            <input
+              type="number"
+              name="system.weapon.reliability"
+              value="{{system.weapon.reliability}}"
+            />
+          </label>
+
+          <label>
+            Mod Slots
+
+            <input
+              type="number"
+              name="system.weapon.modSlots"
+              value="{{system.weapon.modSlots}}"
+            />
+          </label>
+
+        </div>
+
+      {{/if}}
+
+      {{#if (eq type "armor")}}
+
+        <div class="k8-item-grid">
+
+          <label>
+            Repulse
+
+            <input
+              type="number"
+              name="system.armor.repulse"
+              value="{{system.armor.repulse}}"
+            />
+          </label>
+
+          <label>
+            Resilience
+
+            <input
+              type="number"
+              name="system.armor.resilience"
+              value="{{system.armor.resilience}}"
+            />
+          </label>
+
+          <label>
+            Armor
+
+            <input
+              type="number"
+              name="system.armor.armor"
+              value="{{system.armor.armor}}"
+            />
+          </label>
+
+        </div>
+
+      {{/if}}
+
+          {{#if (eq type "gear")}}
+
+        <div class="k8-item-grid">
+
+          <label>
+            Tactical Slots Granted
+
+            <input
+              type="number"
+              name="system.gear.grants.tacticalSlots"
+              value="{{system.gear.grants.tacticalSlots}}"
+              min="0"
+              step="1"
+            />
+          </label>
+
+          <label>
+            Quick Slots Granted
+
+            <input
+              type="number"
+              name="system.gear.grants.quickSlots"
+              value="{{system.gear.grants.quickSlots}}"
+              min="0"
+              step="1"
+            />
+          </label>
+
+        </div>
+
+      {{/if}}
+
+    </section>
+
+    {{!-- ====================================== --}}
+    {{!-- CONTAINER                              --}}
+    {{!-- ====================================== --}}
+
+    <section
+      class="k8-item-tab-panel"
+      data-k8-item-tab-panel="container"
+    >
+
+      <div class="k8-item-grid">
+
+        <label>
+          Enabled
+
+          <input
+            type="checkbox"
+            name="system.container.enabled"
+            {{checked system.container.enabled}}
+          />
+        </label>
+
+        <label>
+          Kind
+
+          <select name="system.container.kind">
+
+            {{selectOptions
+              containerKindOptions
+              selected=system.container.kind
+            }}
+
+          </select>
+        </label>
+
+        <label>
+          Accepts
+
+          <input
+            type="text"
+            name="system.container.accepts"
+            value="{{system.container.accepts}}"
+          />
+        </label>
+
+        <label>
+          Grid Width
+
+          <input
+            type="number"
+            name="system.container.width"
+            value="{{system.container.width}}"
+          />
+        </label>
+
+        <label>
+          Grid Height
+
+          <input
+            type="number"
+            name="system.container.height"
+            value="{{system.container.height}}"
+          />
+        </label>
+
+      </div>
+
+    </section>
+
+    {{!-- ====================================== --}}
+    {{!-- TEXT                                   --}}
+    {{!-- ====================================== --}}
+
+    <section
+      class="k8-item-tab-panel"
+      data-k8-item-tab-panel="text"
+    >
+
+      <textarea
+        name="system.description"
+        rows="16"
+      >{{system.description}}</textarea>
+
+    </section>
+
+    {{!-- ====================================== --}}
+    {{!-- EFFECTS                                --}}
+    {{!-- ====================================== --}}
+
+    <section
+      class="k8-item-tab-panel"
+      data-k8-item-tab-panel="effects"
+    >
+
+      <div class="k8-muted">
+        Effects editor will be added later.
+      </div>
+
+    </section>
+
+  </section>
+
+</div>
